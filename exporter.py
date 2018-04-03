@@ -23,11 +23,11 @@ class Exporter:
         if x_table.nrows > 0:
             count = 0
             for i in range(2, x_table.nrows):
-                # try:
-                self.db.write(x_table.row_values(i))
-                count += 1
-                # except:
-                #     pass
+                try:
+                    self.db.write(x_table.row_values(i))
+                    count += 1
+                except:
+                    pass
             return count
         else:
             return 0
