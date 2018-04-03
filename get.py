@@ -8,8 +8,8 @@ import argparse
 
 def init_logger():
     logger = logging.getLogger("cnzz_crawler")    
-    # logger.setLevel(logging.DEBUG)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
+    # logger.setLevel(logging.INFO)
     log_handler = logging.StreamHandler()
     logger.addHandler(log_handler)
     formatter = logging.Formatter('[%(asctime)s] %(levelname)s - %(message)s')

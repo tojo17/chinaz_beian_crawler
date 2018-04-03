@@ -12,32 +12,28 @@ from dbio import DBIO
 class Exporter:
     def __init__(self, baseurl, dbio):
         self.logger = logging.getLogger("cnzz_crawler.exporter")
-        self.logger.setLevel(logging.INFO)
-        self.log_handler = logging.StreamHandler()
-        self.logger.addHandler(self.log_handler)
-        self.formatter = logging.Formatter('[%(asctime)s] %(levelname)s - %(message)s')
-        self.log_handler.setFormatter(self.formatter)
         # base url was http://icp.chinaz.com/saveExc.ashx
         self.baseurl = baseurl
         self.total = 0
         self.db = dbio
     
     def analyse_xls(self, xls_data):
-        xls = xlrd.open_workbook(file_contents = ret_xls)
+        xls = xlrd.open_workbook(file_contents = xls_data)
         x_table = xls.sheets()[0]
         if x_table.nrows > 0:
             count = 0
             for i in range(2, x_table.nrows):
-                try:
-                    db.write(xls.sheets()[i])
-                    count += 1
-                except:
-                    pass
+                # try:
+                self.db.write(x_table.row_values(i))
+                count += 1
+                # except:
+                #     pass
             return count
         else:
             return 0
 
     def get_province(self, province, start_date):
+        subtotal = 0
         self.logger.info('Getting province of %s' % province)
         # date must be YYYYMMDD
         try:
@@ -68,9 +64,12 @@ class Exporter:
                 return
             count = self.analyse_xls(ret_xls)
             self.total += count
-            print(' returned %d results. %d results in total.\r' % (count, self.total))
+            subtotal += count
+            print(' returned %d results. %d results in total.' % (count, self.total), end = '\r')
             # add one day to time
             start_asc_time += (3600*24)
+
+        self.logger.info('Got %d results from %s' % (subtotal, province))
 
 
 
