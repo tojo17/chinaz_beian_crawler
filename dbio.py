@@ -3,7 +3,6 @@
 import logging
 import sqlite3
 import datetime
-import urllib
 
 class DBIO:
     'open db for io'
