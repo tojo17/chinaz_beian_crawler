@@ -11,7 +11,7 @@ from dbio import DBIO
 
 class Exporter:
     def __init__(self, baseurl, dbio):
-        self.logger = logging.getLogger("cnzz_crawler.exporter")
+        self.logger = logging.getLogger("cnzz_crawler.exporter")        
         # base url was http://icp.chinaz.com/saveExc.ashx
         self.baseurl = baseurl
         self.total = 0

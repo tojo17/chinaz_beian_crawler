@@ -24,6 +24,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--startdate', required = True, help = 'start date (YYYYMMDD)')
     parser.add_argument('-p', '--province', help = 'the province to get, if not assigned crawl all')
     args = parser.parse_args()
+    init_logger()
 
     db = DBIO(args.database)
     ex = Exporter('http://icp.chinaz.com/saveExc.ashx', db)
