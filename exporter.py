@@ -36,19 +36,28 @@ class Exporter:
             for i in range(2, x_table.nrows):
                 ret.append(x_table.row_values(i))
             self.total += len(ret)
-            print('%s %s returned %d results, %d in total.' % (
-                self.get_para['_provinces'], date, len(ret), self.total))
+            print('%s returned %d results, %d in total.' % (
+                date, len(ret), self.total))
             return ret
         else:
-            print('%s %s returned no results.' % (self.get_para['_provinces'], date), end='\r')            
+            print('%s returned no results.' % (date), end='\r')            
             return []
 
-    def fetch(self, start_str_time):
-        self.get_para['_btime'] = start_str_time
-        self.get_para['_etime'] = start_str_time
+    def fetch(self, start_str_time, province):
+        get_para = {
+            '_host': '',
+            '_companyName': '',
+            '_companyXZ': '不限',
+            '_wname': '',
+            '_provinces': province,
+            '_btime': start_str_time,
+            '_etime': start_str_time,
+            '_page': '',
+            'saveData': '导出所有结果'
+        }
         # print('\rProcessing %s' % start_str_time)
         try:
-            ret_xls = requests.post(self.baseurl, data=self.get_para).content
+            ret_xls = requests.post(self.baseurl, data=get_para).content
         except:
             self.logger.error('Network error!')
             return []
@@ -62,17 +71,6 @@ class Exporter:
         except:
             self.logger.error('Time format error!')
             return
-        self.get_para = {
-            '_host': '',
-            '_companyName': '',
-            '_companyXZ': '不限',
-            '_wname': '',
-            '_provinces': province,
-            '_btime': '',
-            '_etime': '',
-            '_page': '',
-            'saveData': '导出所有结果'
-        }
         thread_pool = multiprocessing.dummy.Pool(processes = self.threads)
         self.logger.debug('%d processes' % self.threads)
         results = []
@@ -81,7 +79,7 @@ class Exporter:
             start_str_time = time.strftime(
                 '%Y-%m-%d', time.localtime(start_asc_time))
             results.append(thread_pool.apply_async(
-                self.fetch, args = (start_str_time,)))
+                self.fetch, args = (start_str_time, province, )))
             # add one day to time
             start_asc_time += (3600*24)
             self.logger.debug(multiprocessing.dummy.current_process())
