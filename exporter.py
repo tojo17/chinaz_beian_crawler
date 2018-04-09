@@ -17,6 +17,8 @@ class Exporter:
         self.baseurl = baseurl
         self.db = dbio
         self.threads = threads
+        self.session = requests.Session()
+        self.session.mount('http://', requests.adapatrs.HTTPAdapaters(max_retries=3))
 
     def write_data(self, rows):
         count = 0
@@ -57,7 +59,7 @@ class Exporter:
         }
         # print('\rProcessing %s' % start_str_time)
         try:
-            ret_xls = requests.post(self.baseurl, data=get_para).content
+            ret_xls = self.session.post(self.baseurl, data=get_para).content
         except:
             self.logger.error('Network error!')
             return []
