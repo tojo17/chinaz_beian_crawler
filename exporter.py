@@ -28,28 +28,29 @@ class Exporter:
                 pass
         return count
 
-    def analyse_xls(self, xls_data):
+    def analyse_xls(self, xls_data, date):
         xls = xlrd.open_workbook(file_contents=xls_data)
         x_table = xls.sheets()[0]
         if x_table.nrows > 1:
             ret = []
             for i in range(2, x_table.nrows):
                 ret.append(x_table.row_values(i))
-            print(' returned %d results.' % (len(ret)))
+            print('%s %s returned %d results.' % (self.get_para['_provinces'], date, len(ret)))
             return ret
         else:
+            print('%s %s returned no results.' % (self.get_para['_provinces'], date), end='\r')            
             return []
 
     def fetch(self, start_str_time):
         self.get_para['_btime'] = start_str_time
         self.get_para['_etime'] = start_str_time
-        print('\rProcessing %s' % start_str_time, end='')
+        # print('\rProcessing %s' % start_str_time)
         try:
             ret_xls = requests.post(self.baseurl, data=self.get_para).content
         except:
             self.logger.error('Network error!')
             return []
-        return self.analyse_xls(ret_xls)
+        return self.analyse_xls(ret_xls, start_str_time)
 
     def get_province(self, province, start_date):
         self.logger.info('Getting province of %s' % province)
@@ -76,7 +77,7 @@ class Exporter:
             start_str_time = time.strftime(
                 '%Y-%m-%d', time.localtime(start_asc_time))
             results.append(thread_pool.apply_async(
-                self.fetch, args = (start_str_time,)))
+                self.fetch, args = (start_str_time, get_para,)))
             # add one day to time
             start_asc_time += (3600*24)
         thread_pool.close()
