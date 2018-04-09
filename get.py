@@ -22,13 +22,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--database', required = True, help = 'SQLite database name')
     parser.add_argument('-s', '--startdate', required = True, help = 'start date (YYYYMMDD)')
-    parser.add_argument('-t', '--threads', help = 'how many threads to use, if not assigned single thread will be used')
+    parser.add_argument('-t', '--threads', type = int, help = 'how many threads to use, if not assigned single thread will be used')
     parser.add_argument('-p', '--province', help = 'the province to get, if not assigned crawl all')
     args = parser.parse_args()
     init_logger()
 
     db = DBIO(args.database)
-    if args.threads: 
+    if not args.threads: 
         threads = 1
     else: 
         threads = args.threads

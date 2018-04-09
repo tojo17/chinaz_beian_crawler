@@ -35,7 +35,9 @@ class Exporter:
             ret = []
             for i in range(2, x_table.nrows):
                 ret.append(x_table.row_values(i))
-            print('%s %s returned %d results.' % (self.get_para['_provinces'], date, len(ret)))
+            self.total += len(ret)
+            print('%s %s returned %d results, %d in total.' % (
+                self.get_para['_provinces'], date, len(ret), self.total))
             return ret
         else:
             print('%s %s returned no results.' % (self.get_para['_provinces'], date), end='\r')            
@@ -72,14 +74,17 @@ class Exporter:
             'saveData': '导出所有结果'
         }
         thread_pool = multiprocessing.dummy.Pool(processes = self.threads)
+        self.logger.debug('%d processes' % self.threads)
         results = []
+        self.total = 0
         while start_asc_time < time.time():
             start_str_time = time.strftime(
                 '%Y-%m-%d', time.localtime(start_asc_time))
             results.append(thread_pool.apply_async(
-                self.fetch, args = (start_str_time, get_para,)))
+                self.fetch, args = (start_str_time,)))
             # add one day to time
             start_asc_time += (3600*24)
+            self.logger.debug(multiprocessing.dummy.current_process())
         thread_pool.close()
         thread_pool.join()
         domain_data = []
