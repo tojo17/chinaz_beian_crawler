@@ -18,7 +18,7 @@ class Exporter:
         self.db = dbio
         self.threads = threads
         self.session = requests.Session()
-        self.session.mount('http://', requests.adapatrs.HTTPAdapaters(max_retries=3))
+        self.session.mount('http://', requests.adapters.HTTPAdapter(max_retries=3))
 
     def write_data(self, rows):
         count = 0
