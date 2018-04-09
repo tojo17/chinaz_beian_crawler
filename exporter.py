@@ -82,7 +82,6 @@ class Exporter:
                 self.fetch, args = (start_str_time, province, )))
             # add one day to time
             start_asc_time += (3600*24)
-            self.logger.debug(multiprocessing.dummy.current_process())
         thread_pool.close()
         thread_pool.join()
         domain_data = []
