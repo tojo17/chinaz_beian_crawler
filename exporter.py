@@ -22,6 +22,9 @@ class Exporter:
 
     def write_data(self, rows):
         count = 0
+        for index in range(0, len(rows)):
+            if index % 100 == 0:
+                print('\rWritting %.2f %%, %d of %d' % (100*(index+1)/len(rows), index+1, len(rows)))
         for row in rows:
             try:
                 self.db.write(row)
@@ -99,6 +102,7 @@ class Exporter:
         for result in results:
             domain_data += result.get()
         self.logger.info('Got %d results from %s' % (len(domain_data), province))
+        self.logger.info('Writting to database')
         written_count = self.write_data(domain_data)
         self.logger.info('%d results written' % (written_count))
         
