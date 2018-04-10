@@ -68,7 +68,7 @@ class Exporter:
             except:
                 self.logger.warning('Network error, retrying %d' % retry)
                 retry += 1
-        if retry == 99:
+        if retry < 99:
             self.logger.error('Network error, give up')
             return []
         else:
