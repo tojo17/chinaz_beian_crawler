@@ -58,12 +58,21 @@ class Exporter:
             'saveData': '导出所有结果'
         }
         # print('\rProcessing %s' % start_str_time)
-        try:
-            ret_xls = self.session.post(self.baseurl, data=get_para).content
-        except:
-            self.logger.error('Network error!')
+        # retry
+        retry = 0
+        while retry < 5:
+            try:
+                ret_xls = self.session.post(self.baseurl, data=get_para).content
+                ret_data = self.analyse_xls(ret_xls, start_str_time)
+                retry = 99
+            except:
+                self.logger.warning('Network error, retrying %d' % retry)
+                retry += 1
+        if retry == 99:
+            self.logger.error('Network error, give up')
             return []
-        return self.analyse_xls(ret_xls, start_str_time)
+        else:
+            return ret_data
 
     def get_province(self, province, start_date):
         self.logger.info('Getting province of %s' % province)
