@@ -30,7 +30,7 @@ class Exporter:
         for index in range(0, len(rows)):
             if (100*(index+1)/len(rows)) % 1 == 0:
                 print('\rWritting %.2f %%, %d of %d' %
-                      (100*(index+1)/len(rows), index+1, len(rows)), end = '')
+                      (100*(index+1)/len(rows), index+1, len(rows)), end='')
             try:
                 self.db.write(rows[index])
                 count += 1
@@ -106,7 +106,8 @@ class Exporter:
                     ret_data = self.fetch_webpage(start_str_time, province)
                 retry = 99
             except:
-                self.logger.warning('Network error, retrying %d' % retry)
+                # self.logger.warning('Network error, retrying %d' % retry)
+                print('Network error, retrying %d' % retry, end='')
                 retry += 1
         if retry < 99:
             self.logger.error('Network error, give up')
@@ -141,15 +142,15 @@ class Exporter:
                     retry = 99
                 except:
                     # self.logger.warning('Network error, retrying %d' % retry)
-                    print('Network error, retrying %d' % retry, end = '')
+                    print('Network error, retrying %d' % retry, end='')
                     retry += 1
             if retry < 99:
                 self.logger.error(
                     'Network error, give up page %d' % get_para['page'])
             else:
                 ret_data += page_data
-                print('\r%s page %d of %d returned %d results, %d in total.' % (
-                    start_str_time, get_para['page'], max_page, len(page_data), len(ret_data)), end='')
+                print('\r%s %s page %d of %d returned %d results, %d in total.' % (
+                    '\t' * 7, start_str_time, get_para['page'], max_page, len(page_data), len(ret_data)), end='')
             get_para['page'] += 1
         return ret_data
 
