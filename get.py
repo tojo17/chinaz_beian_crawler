@@ -44,3 +44,4 @@ if __name__ == '__main__':
     else:
         for prov in provinces:
             ex.get_province(prov)
+    db.close()

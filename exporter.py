@@ -25,19 +25,6 @@ class Exporter:
         self.session.mount(
             'http://', requests.adapters.HTTPAdapter(max_retries=3))
 
-    def write_data(self, rows):
-        count = 0
-        for index in range(0, len(rows)):
-            if (100*(index+1)/len(rows)) % 1 == 0:
-                print('\rWritting %.2f %%, %d of %d' %
-                      (100*(index+1)/len(rows), index+1, len(rows)), end='')
-            try:
-                self.db.write(rows[index])
-                count += 1
-            except:
-                pass
-        return count
-
     def analyse_xls(self, xls_data, date):
         xls = xlrd.open_workbook(
             file_contents=xls_data, logfile=open(os.devnull, 'w'))
@@ -94,7 +81,7 @@ class Exporter:
         # print('\rProcessing %s' % start_str_time)
         # retry
         retry = 0
-        while retry < 50:
+        while retry < 10:
             try:
                 ret_xls = self.session.post(
                     self.baseurl, data=get_para).content
@@ -107,7 +94,7 @@ class Exporter:
                 retry = 99
             except:
                 # self.logger.warning('Network error, retrying %d' % retry)
-                print('Network error, retrying %d' % retry, end='')
+                print('\rNetwork error, retrying %d' % retry, end='')
                 retry += 1
         if retry < 99:
             self.logger.error('Network error, give up')
@@ -133,7 +120,7 @@ class Exporter:
         while get_para['page'] <= max_page and get_para['page'] <= 50:
             # retry
             retry = 0
-            while retry < 50:
+            while retry < 10:
                 try:
                     html = self.session.get(
                         self.queryurl, params=get_para).text
@@ -142,7 +129,7 @@ class Exporter:
                     retry = 99
                 except:
                     # self.logger.warning('Network error, retrying %d' % retry)
-                    print('Network error, retrying %d' % retry, end='')
+                    print('\rNetwork error, retrying %d' % retry, end='')
                     retry += 1
             if retry < 99:
                 self.logger.error(
@@ -185,5 +172,5 @@ class Exporter:
         self.logger.info('Got %d results from %s' %
                          (len(domain_data), province))
         self.logger.info('Writting to database')
-        written_count = self.write_data(domain_data)
+        written_count = self.db.write_data(domain_data)
         self.logger.info('%d results written' % (written_count))
