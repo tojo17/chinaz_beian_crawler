@@ -28,12 +28,11 @@ class Exporter:
     def write_data(self, rows):
         count = 0
         for index in range(0, len(rows)):
-            if index % 100 == 0:
+            if (100*(index+1)/len(rows)) % 1 == 0:
                 print('\rWritting %.2f %%, %d of %d' %
-                      (100*(index+1)/len(rows), index+1, len(rows)))
-        for row in rows:
+                      (100*(index+1)/len(rows), index+1, len(rows)), end = '')
             try:
-                self.db.write(row)
+                self.db.write(rows[index])
                 count += 1
             except:
                 pass
