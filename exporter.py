@@ -110,7 +110,6 @@ class Exporter:
             self.logger.error('Network error, give up')
             return []
         else:
-            print('')
             return ret_data
 
     def fetch_webpage(self, start_str_time, province):
@@ -176,6 +175,7 @@ class Exporter:
         domain_data = []
         for result in results:
             domain_data += result.get()
+        print('')        
         self.logger.info('Got %d results from %s' %
                          (len(domain_data), province))
         self.logger.info('Writting to database')
