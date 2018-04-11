@@ -12,12 +12,14 @@ from lxml import etree
 
 
 class Exporter:
-    def __init__(self, dbio, threads):
+    def __init__(self, dbio, threads, start_date, end_date):
         self.logger = logging.getLogger("cnzz_crawler.exporter")
         self.baseurl = 'http://icp.chinaz.com/saveExc.ashx'
         self.queryurl = 'http://icp.chinaz.com/conditions'
         self.db = dbio
         self.threads = threads
+        self.start_date = start_date
+        self.end_date = end_date
         self.session = requests.Session()
         self.session.mount(
             'http://', requests.adapters.HTTPAdapter(max_retries=3))
@@ -153,11 +155,12 @@ class Exporter:
             get_para['page'] += 1
         return ret_data
 
-    def get_province(self, province, start_date):
+    def get_province(self, province):
         self.logger.info('Getting province of %s' % province)
         # date must be YYYYMMDD
         try:
-            start_asc_time = time.mktime(time.strptime(start_date, '%Y%m%d'))
+            start_asc_time = time.mktime(time.strptime(self.start_date, '%Y%m%d'))
+            end_asc_time = time.mktime(time.strptime(self.end_date, '%Y%m%d'))
         except:
             self.logger.error('Time format error!')
             return
@@ -165,7 +168,7 @@ class Exporter:
         self.logger.debug('%d processes' % self.threads)
         results = []
         self.total = 0
-        while start_asc_time < time.time():
+        while start_asc_time < end_asc_time:
             start_str_time = time.strftime(
                 '%Y-%m-%d', time.localtime(start_asc_time))
             results.append(thread_pool.apply_async(

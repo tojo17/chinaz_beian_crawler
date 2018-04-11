@@ -22,6 +22,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--database', required = True, help = 'SQLite database name')
     parser.add_argument('-s', '--startdate', required = True, help = 'start date (YYYYMMDD)')
+    parser.add_argument('-e', '--enddate', help = 'end date (YYYYMMDD), if not assigned, set as today')
     parser.add_argument('-t', '--threads', type = int, help = 'how many threads to use, if not assigned single thread will be used')
     parser.add_argument('-p', '--province', help = 'the province to get, if not assigned crawl all')
     args = parser.parse_args()
@@ -32,7 +33,11 @@ if __name__ == '__main__':
         threads = 1
     else: 
         threads = args.threads
-    ex = Exporter(db, threads)
+    if not args.enddate:
+        end_date = time.time()
+    else:
+        end_date = args.enddate
+    ex = Exporter(db, threads, args.startdate, end_date)
     if args.province:
         ex.get_province(args.province, args.startdate)
     else:
