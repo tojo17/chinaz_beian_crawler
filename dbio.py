@@ -12,7 +12,7 @@ class DBIO:
         self.logger.info("Database connected successfully.")
 
     def write(self, domain_row):
-        self.logger.debug("Writing domain data...")
+        # self.logger.debug("Writing domain data...")
         cu = self.conn.cursor()
         # if duplicate data, write will return an exception
         cu.execute('INSERT INTO domains_icp (domain, owner_name, owner_type, icp_cert, site_name, homepage, time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (

@@ -150,7 +150,7 @@ class Exporter:
                     'Network error, give up page %d' % get_para['page'])
             else:
                 ret_data += page_data
-                print('%s page %d of %d returned %d results, %d in total.' % (
+                print('\r%s page %d of %d returned %d results, %d in total.' % (
                     start_str_time, get_para['page'], max_page, len(page_data), len(ret_data)))
             get_para['page'] += 1
         return ret_data

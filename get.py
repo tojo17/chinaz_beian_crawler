@@ -4,12 +4,13 @@
 from exporter import Exporter
 from dbio import DBIO
 import logging
+import time
 import argparse
 
 def init_logger():
     logger = logging.getLogger("cnzz_crawler")    
-    logger.setLevel(logging.DEBUG)
-    # logger.setLevel(logging.INFO)
+    # logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     log_handler = logging.StreamHandler()
     logger.addHandler(log_handler)
     formatter = logging.Formatter('[%(asctime)s] %(levelname)s - %(message)s')
@@ -39,10 +40,10 @@ if __name__ == '__main__':
         end_date = args.enddate
     ex = Exporter(db, threads, args.startdate, end_date)
     if args.province:
-        ex.get_province(args.province, args.startdate)
+        ex.get_province(args.province)
     else:
         for prov in provinces:
-            ex.get_province(prov, args.startdate)
+            ex.get_province(prov)
     
     
 
