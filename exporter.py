@@ -41,18 +41,13 @@ class Exporter:
     def analyse_xls(self, xls_data, date):
         xls = xlrd.open_workbook(file_contents=xls_data)
         x_table = xls.sheets()[0]
-
+        ret = []
         if x_table.nrows > 1:
-            ret = []
             for i in range(2, x_table.nrows):
                 ret.append(x_table.row_values(i))
             self.total += len(ret)
-            print('%s returned %d results, %d in total.' % (
-                date, len(ret), self.total))
-            return ret
-        else:
-            print('%s returned no results.' % (date), end='\r')
-            return []
+        print('\r%s returned %d results, %d in total.' % (date, len(ret), self.total), end = '')
+        return ret        
 
     def analyse_xpath(self, html, date):
         selector = etree.HTML(html)
@@ -115,6 +110,7 @@ class Exporter:
             self.logger.error('Network error, give up')
             return []
         else:
+            print('')
             return ret_data
 
     def fetch_webpage(self, start_str_time, province):
