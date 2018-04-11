@@ -94,7 +94,7 @@ class Exporter:
         # print('\rProcessing %s' % start_str_time)
         # retry
         retry = 0
-        while retry < 5:
+        while retry < 50:
             try:
                 ret_xls = self.session.post(
                     self.baseurl, data=get_para).content
@@ -132,7 +132,7 @@ class Exporter:
         while get_para['page'] <= max_page and get_para['page'] <= 50:
             # retry
             retry = 0
-            while retry < 5:
+            while retry < 50:
                 try:
                     html = self.session.get(
                         self.queryurl, params=get_para).text
@@ -140,7 +140,8 @@ class Exporter:
                         html, start_str_time)
                     retry = 99
                 except:
-                    self.logger.warning('Network error, retrying %d' % retry)
+                    # self.logger.warning('Network error, retrying %d' % retry)
+                    print('Network error, retrying %d' % retry, end = '')
                     retry += 1
             if retry < 99:
                 self.logger.error(
