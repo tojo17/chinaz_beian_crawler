@@ -6,6 +6,7 @@ import logging
 import requests
 import sys
 import time
+import os
 import multiprocessing.dummy
 from dbio import DBIO
 from lxml import etree
@@ -39,15 +40,17 @@ class Exporter:
         return count
 
     def analyse_xls(self, xls_data, date):
-        xls = xlrd.open_workbook(file_contents=xls_data)
+        xls = xlrd.open_workbook(
+            file_contents=xls_data, logfile=open(os.devnull, 'w'))
         x_table = xls.sheets()[0]
         ret = []
         if x_table.nrows > 1:
             for i in range(2, x_table.nrows):
                 ret.append(x_table.row_values(i))
             self.total += len(ret)
-        print('\r%s returned %d results, %d in total.' % (date, len(ret), self.total), end = '')
-        return ret        
+        print('\r%s returned %d results, %d in total.' %
+              (date, len(ret), self.total), end='')
+        return ret
 
     def analyse_xpath(self, html, date):
         selector = etree.HTML(html)
@@ -146,7 +149,7 @@ class Exporter:
             else:
                 ret_data += page_data
                 print('\r%s page %d of %d returned %d results, %d in total.' % (
-                    start_str_time, get_para['page'], max_page, len(page_data), len(ret_data)))
+                    start_str_time, get_para['page'], max_page, len(page_data), len(ret_data)), end='')
             get_para['page'] += 1
         return ret_data
 
@@ -154,10 +157,12 @@ class Exporter:
         self.logger.info('Getting province of %s' % province)
         # date must be YYYYMMDD
         try:
-            start_asc_time = time.mktime(time.strptime(self.start_date, '%Y%m%d'))
+            start_asc_time = time.mktime(
+                time.strptime(self.start_date, '%Y%m%d'))
             end_asc_time = time.mktime(time.strptime(self.end_date, '%Y%m%d'))
         except:
-            self.logger.error('Time format error! %s to %s' % (self.start_date, self.end_date))
+            self.logger.error('Time format error! %s to %s' %
+                              (self.start_date, self.end_date))
             return
         thread_pool = multiprocessing.dummy.Pool(processes=self.threads)
         self.logger.debug('%d processes' % self.threads)
@@ -175,7 +180,7 @@ class Exporter:
         domain_data = []
         for result in results:
             domain_data += result.get()
-        print('')        
+        print('')
         self.logger.info('Got %d results from %s' %
                          (len(domain_data), province))
         self.logger.info('Writting to database')
