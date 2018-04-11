@@ -10,6 +10,7 @@ class DBIO:
         self.conn = sqlite3.connect(db_name)
         self.logger = logging.getLogger("cnzz_crawler.dbio")
         self.logger.info("Database connected successfully.")
+        self.count = 0
         
     def write_data(self, rows):
         count = 0
@@ -28,9 +29,12 @@ class DBIO:
                 count += 1
             except:
                 pass
-        self.logger.info("\nCommitting domain data...")        
+        print('')
+        self.logger.info("Committing domain data...")        
         self.conn.commit()
+        self.count += count
         return count
 
     def close(self):
+        self.logger.info('%d data written to DB in total.' % self.count)
         self.conn.close()
