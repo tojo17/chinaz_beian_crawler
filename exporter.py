@@ -18,8 +18,8 @@ class Exporter:
         self.queryurl = 'http://icp.chinaz.com/conditions'
         self.db = dbio
         self.threads = threads
-        self.start_date = start_date
-        self.end_date = end_date
+        self.start_date = str(start_date)
+        self.end_date = str(end_date)
         self.session = requests.Session()
         self.session.mount(
             'http://', requests.adapters.HTTPAdapter(max_retries=3))
@@ -162,7 +162,7 @@ class Exporter:
             start_asc_time = time.mktime(time.strptime(self.start_date, '%Y%m%d'))
             end_asc_time = time.mktime(time.strptime(self.end_date, '%Y%m%d'))
         except:
-            self.logger.error('Time format error!')
+            self.logger.error('Time format error! %s to %s' % (self.start_date, self.end_date))
             return
         thread_pool = multiprocessing.dummy.Pool(processes=self.threads)
         self.logger.debug('%d processes' % self.threads)
