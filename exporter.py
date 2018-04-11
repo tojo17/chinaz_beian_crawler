@@ -168,7 +168,7 @@ class Exporter:
         self.logger.debug('%d processes' % self.threads)
         results = []
         self.total = 0
-        while start_asc_time < end_asc_time:
+        while start_asc_time <= end_asc_time:
             start_str_time = time.strftime(
                 '%Y-%m-%d', time.localtime(start_asc_time))
             results.append(thread_pool.apply_async(
