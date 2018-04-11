@@ -139,6 +139,9 @@ class Exporter:
                 print('\r%s %s page %d of %d returned %d results, %d in total.' % (
                     '\t' * 7, start_str_time, get_para['page'], max_page, len(page_data), len(ret_data)), end='')
             get_para['page'] += 1
+        self.total += len(ret_data) - 1000
+        print('\r%s returned %d results by web page, %d in total.' %
+              (start_str_time, len(ret_data), self.total), end='')
         return ret_data
 
     def get_province(self, province):
