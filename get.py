@@ -6,6 +6,7 @@ from dbio import DBIO
 import logging
 import time
 import argparse
+import multiprocessing
 
 
 def init_logger():
@@ -30,8 +31,8 @@ if __name__ == '__main__':
                         type=int, help='start date (YYYYMMDD)')
     parser.add_argument('-e', '--enddate', type=int, default=time.strftime('%Y%m%d', time.localtime(time.time())),
                         help='end date (YYYYMMDD), if not assigned, set as today')
-    parser.add_argument('-t', '--threads', type=int, default=1,
-                        help='how many threads to use, if not assigned single thread will be used')
+    parser.add_argument('-t', '--threads', type=int, default=multiprocessing.cpu_count(),
+                        help='how many threads to use, if not assigned thread will be the same as cpu cores')
     parser.add_argument('-p', '--province',
                         help='the province to get, if not assigned crawl all')
     args = parser.parse_args()

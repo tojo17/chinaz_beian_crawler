@@ -28,7 +28,7 @@ class DBIO:
                 count += 1
             except:
                 pass
-        self.logger.info("Committing domain data...")        
+        self.logger.info("\nCommitting domain data...")        
         self.conn.commit()
         return count
 
