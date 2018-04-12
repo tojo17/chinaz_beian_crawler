@@ -31,7 +31,6 @@ class DBIO:
                 pass
         self.conn.commit()
         self.count += count
-        print('\t' * 12, end = '\r')
         return count
 
     def close(self):

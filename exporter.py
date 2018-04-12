@@ -35,7 +35,7 @@ class Exporter:
                 ret.append(x_table.row_values(i))
             self.total += len(ret)
         print('\r%s returned %d results, %d in total.' %
-              (date, len(ret), self.total), end='')
+              (date, len(ret), self.total), end=' ' * 5)
         return ret
 
     def analyse_xpath(self, html, date):
@@ -88,7 +88,6 @@ class Exporter:
                 ret_data = self.analyse_xls(ret_xls, start_str_time)
                 if len(ret_data) > 999:
                     # more than 1000, possibly lose data
-                    print('\t' * 12, end = '\r')
                     self.logger.info(
                         '%s has more than 1000 results, possible data loss, using web page fetch.' % start_str_time)
                     ret_data = self.fetch_webpage(start_str_time, province)
@@ -98,7 +97,6 @@ class Exporter:
                 print('\rNetwork error, retrying %d' % retry, end='')
                 retry += 1
         if retry < 99:
-            print('\t' * 12, end = '\r')
             self.logger.error('%s network error, give up' % start_str_time)
             return []
         else:
@@ -133,8 +131,7 @@ class Exporter:
                     # self.logger.warning('Network error, retrying %d' % retry)
                     print('\rNetwork error, retrying %d' % retry, end='')
                     retry += 1
-            if retry < 99:
-                print('\t' * 12, end = '\r')                
+            if retry < 99:             
                 self.logger.error(
                     '%s network error, give up page %d' % (start_str_time, get_para['page']))
             else:
@@ -143,10 +140,9 @@ class Exporter:
                     '\t' * 9, start_str_time, get_para['page'], max_page, len(page_data), len(ret_data)), end='')
             get_para['page'] += 1
         self.total += len(ret_data) - 1000
-        print('\r%s returned %d results by web page, %d in total.\t' %
+        print('\r%s returned %d results by web page, %d in total.' %
               (start_str_time, len(ret_data), self.total), end='')
         if max_page > 50:
-            print('\t' * 12, end = '\r')
             self.logger.warning('%s has %d pages from webpage, will suffer data loss!' % (start_str_time, max_page))
         return ret_data
 
@@ -177,7 +173,6 @@ class Exporter:
         domain_data = []
         for result in results:
             domain_data += result.get()
-        print('\t' * 12, end = '\r')
         self.logger.info('Got %d results from %s' %
                          (len(domain_data), province))
         self.logger.info('Writting to database')

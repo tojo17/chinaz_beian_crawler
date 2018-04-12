@@ -15,7 +15,7 @@ def init_logger():
     logger.setLevel(logging.INFO)
     log_handler = logging.StreamHandler()
     logger.addHandler(log_handler)
-    formatter = logging.Formatter('[%(asctime)s] %(levelname)s - %(message)s')
+    formatter = logging.Formatter(' ' * 110 + '\r[%(asctime)s] %(levelname)s - %(message)s')
     log_handler.setFormatter(formatter)
     return logger
 
