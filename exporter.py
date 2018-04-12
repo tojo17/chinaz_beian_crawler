@@ -177,7 +177,7 @@ class Exporter:
         domain_data = []
         for result in results:
             domain_data += result.get()
-        print('')
+        print('\t' * 12, end = '\r')
         self.logger.info('Got %d results from %s' %
                          (len(domain_data), province))
         self.logger.info('Writting to database')
