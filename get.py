@@ -24,6 +24,7 @@ provinces = ["京", "津", "冀", "晋", "蒙", "辽", "吉", "黑", "沪", "苏
              "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "渝", "蜀", "黔", "滇", "藏", "陕", "陇", "青", "宁", "新"]
 
 if __name__ == '__main__':
+    s_time = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--database', required=True,
                         help='SQLite database name')
@@ -36,7 +37,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--province',
                         help='the province to get, if not assigned crawl all')
     args = parser.parse_args()
-    init_logger()
+    logger = init_logger()
 
     db = DBIO(args.database)
     ex = Exporter(db, args.threads, args.startdate, args.enddate)
@@ -46,3 +47,5 @@ if __name__ == '__main__':
         for prov in provinces:
             ex.get_province(prov)
     db.close()
+    e_time = time.time()
+    logger.info('Used %s seconds' % (e_time - s_time))

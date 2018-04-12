@@ -29,10 +29,9 @@ class DBIO:
                 count += 1
             except:
                 pass
-        print('')
-        self.logger.info("Committing domain data...")        
         self.conn.commit()
         self.count += count
+        print('\t' * 12, end = '\r')
         return count
 
     def close(self):
