@@ -88,8 +88,9 @@ class Exporter:
                 ret_data = self.analyse_xls(ret_xls, start_str_time)
                 if len(ret_data) > 999:
                     # more than 1000, possibly lose data
-                    self.logger.warning(
-                        'More than 1000 results, possible data loss, using web page fetch.')
+                    print('\r', end = '')
+                    self.logger.info(
+                        '%s has more than 1000 results, possible data loss, using web page fetch.' % start_str_time)
                     ret_data = self.fetch_webpage(start_str_time, province)
                 retry = 99
             except:
@@ -137,11 +138,14 @@ class Exporter:
             else:
                 ret_data += page_data
                 print('\r%s %s page %d of %d returned %d results, %d in total.' % (
-                    '\t' * 7, start_str_time, get_para['page'], max_page, len(page_data), len(ret_data)), end='')
+                    '\t' * 9, start_str_time, get_para['page'], max_page, len(page_data), len(ret_data)), end='')
             get_para['page'] += 1
         self.total += len(ret_data) - 1000
         print('\r%s returned %d results by web page, %d in total.' %
               (start_str_time, len(ret_data), self.total), end='')
+        if max_page > 50:
+            print('\r', end = '')
+            self.logger.warning('%s has %d pages from webpage, will suffer data loss!' % (start_str_time, max_page))
         return ret_data
 
     def get_province(self, province):
