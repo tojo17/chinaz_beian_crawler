@@ -35,7 +35,7 @@ class Exporter:
                 ret.append(x_table.row_values(i))
             self.total += len(ret)
         print('\r%s returned %d results, %d in total.' %
-              (date, len(ret), self.total), end=' ' * 5)
+              (date, len(ret), self.total), end=' ' * 9)
         return ret
 
     def analyse_xpath(self, html, date):
@@ -89,7 +89,7 @@ class Exporter:
                 if len(ret_data) > 999:
                     # more than 1000, possibly lose data
                     self.logger.info(
-                        '%s has more than 1000 results, possible data loss, using web page fetch.' % start_str_time)
+                        '%s has more than 1000 results, using web page fetch.' % start_str_time)
                     ret_data = self.fetch_webpage(start_str_time, province)
                 retry = 99
             except:
@@ -147,7 +147,7 @@ class Exporter:
         return ret_data
 
     def get_province(self, province):
-        self.logger.info('Getting province of %s' % province)
+        self.logger.info('Getting province of %s with %d threads' % (province, self.threads))
         # date must be YYYYMMDD
         try:
             start_asc_time = time.mktime(
@@ -158,7 +158,6 @@ class Exporter:
                               (self.start_date, self.end_date))
             return
         thread_pool = multiprocessing.dummy.Pool(processes=self.threads)
-        self.logger.debug('%d processes' % self.threads)
         results = []
         self.total = 0
         while start_asc_time <= end_asc_time:
@@ -173,8 +172,7 @@ class Exporter:
         domain_data = []
         for result in results:
             domain_data += result.get()
-        self.logger.info('Got %d results from %s' %
+        self.logger.info('Got %d results from %s, writting to database' %
                          (len(domain_data), province))
-        self.logger.info('Writting to database')
         written_count = self.db.write_data(domain_data)
-        self.logger.info('%d results written' % (written_count))
+        self.logger.info('%d new results written' % (written_count))
